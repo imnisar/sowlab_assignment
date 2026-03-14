@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "697869884802",
+    "project_id": "sowlab-dee15",
+    "storage_bucket": "sowlab-dee15.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:697869884802:android:59a4d0baefaefadb18039b",
+        "android_client_info": {
+          "package_name": "com.sowlab.sowlab.sowlab_assignment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtp_wBVU0ki1-QqblSuXD8HgezT6vfq6w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
