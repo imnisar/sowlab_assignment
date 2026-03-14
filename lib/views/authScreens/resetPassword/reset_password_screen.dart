@@ -7,20 +7,20 @@ import '../../../constants/enums.dart';
 import '../../../customWidgets/custom_button.dart';
 import '../../../customWidgets/custom_text_field.dart';
 
-class ResetPasswordScreen extends StatelessWidget {
-  ResetPasswordScreen({super.key});
+import '../authController/reset_password_controller.dart';
 
-  final newPasswordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+class ResetPasswordScreen extends StatelessWidget {
+  const ResetPasswordScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(ResetPasswordController());
     CustomScreenUtil.init(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 30.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,26 +71,35 @@ class ResetPasswordScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 40.h), CustomTextField(
-                controller: newPasswordController,
+              SizedBox(height: 40.h),
+              CustomTextField(
+                controller: controller.newPasswordController,
                 hintText: "New Password",
                 icon: AppImages.lock,
                 isPassword: true,
+                errorMsg: controller.newPasswordError,
               ),
               SizedBox(height: 20.h),
-
               CustomTextField(
-                controller: confirmPasswordController,
+                controller: controller.confirmPasswordController,
                 hintText: "Confirm New Password",
                 icon: AppImages.lock,
                 isPassword: true,
+                errorMsg: controller.confirmPasswordError,
               ),
               SizedBox(height: 30.h),
-              CustomButton(
-                text: "Submit",
-                onPressed: () => Get.offAllNamed('/login'),
+              Obx(() => CustomButton(
+                text: controller.isLoading.value ? "" : "Submit",
+                onPressed: controller.isLoading.value ? null : () => controller.submitResetPassword(),
                 backgroundColor: const Color(0xFFD67C65),
-              ),
+                child: controller.isLoading.value 
+                    ? const SizedBox(
+                        height: 20, 
+                        width: 20, 
+                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                      ) 
+                    : null,
+              )),
             ],
           ),
         ),
