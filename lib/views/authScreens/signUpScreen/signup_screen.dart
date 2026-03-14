@@ -514,7 +514,7 @@ class SignupScreen extends StatelessWidget {
               Spacer(),
               Obx(() => CustomButton(
                 text: controller.isLoading.value ? "" : "Signup",
-                onPressed: controller.isLoading.value ? null : controller.signup,
+                onPressed: controller.isLoading.value ? null : () => controller.signup(),
                 backgroundColor: const Color(0xFFD67C65),
                 width: 180.w,
                 child: controller.isLoading.value 

@@ -120,7 +120,7 @@ class LoginScreen extends StatelessWidget {
               SizedBox(height: 30.h),
               Obx(() => CustomButton(
                 text: controller.isLoading.value ? "" : "Login",
-                onPressed: controller.isLoading.value ? null : controller.login,
+                onPressed: controller.isLoading.value ? null : () => controller.login(),
                 backgroundColor: const Color(0xFFD67C65),
                 child: controller.isLoading.value 
                     ? const SizedBox(
