@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sowlab_assignment/routes/app_routes.dart';
 import 'package:get/get.dart';
 import 'package:sowlab_assignment/config/app_font.dart';
 import 'package:sowlab_assignment/config/app_utils.dart';
@@ -55,7 +56,7 @@ class VerifyOtpScreen extends StatelessWidget {
                     ),
                   ),
                   InkWell(
-                    onTap: () => Get.offAllNamed('/login'),
+                    onTap: () => Get.offAllNamed(AppRoutes.login),
                     child: Text(
                       "Login",
                       style: TextStyle(

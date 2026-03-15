@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sowlab_assignment/routes/app_routes.dart';
 
 
 class ForgotPasswordController extends GetxController {
@@ -113,7 +114,7 @@ class ForgotPasswordController extends GetxController {
     if (phoneController.text.isNotEmpty) {
       generateNewOtp();
       startTimer();
-      Get.toNamed('/verify-otp');
+      Get.toNamed(AppRoutes.verifyOtp);
     } else {
       Get.snackbar("Error", "Please enter your phone number", 
           backgroundColor: Colors.red, colorText: Colors.white);
@@ -130,7 +131,7 @@ class ForgotPasswordController extends GetxController {
     if (enteredOtp == generatedOtp.value) {
       otpError.value = "";
       _timer?.cancel();
-      Get.toNamed('/reset-password');
+      Get.toNamed(AppRoutes.resetPassword);
     } else {
       otpError.value = "Incorrect OTP, try again";
     }

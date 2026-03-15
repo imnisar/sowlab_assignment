@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sowlab_assignment/routes/app_routes.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import '../../../config/app_font.dart';
@@ -590,7 +591,7 @@ class SignupScreen extends StatelessWidget {
           const Spacer(flex: 3),
           CustomButton(
             text: "Got it!",
-            onPressed: () => Get.offAllNamed('/login'),
+            onPressed: () => Get.offAllNamed(AppRoutes.login),
             backgroundColor: const Color(0xFFD67C65),
             width: double.infinity,
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sowlab_assignment/routes/app_routes.dart';
 import 'package:get/get.dart';
 import '../../../config/app_font.dart';
 import '../../../config/app_images.dart';
@@ -58,7 +59,7 @@ class ResetPasswordScreen extends StatelessWidget {
                     ),
                   ),
                   InkWell(
-                    onTap: () => Get.offAllNamed('/login'),
+                    onTap: () => Get.offAllNamed(AppRoutes.login),
                     child: Text(
                       "Login",
                       style: TextStyle(

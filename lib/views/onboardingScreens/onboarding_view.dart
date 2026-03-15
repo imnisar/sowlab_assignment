@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sowlab_assignment/routes/app_routes.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:sowlab_assignment/config/app_font.dart';
@@ -98,7 +99,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                     SizedBox(height: 40.h),
                     CustomButton(
                       text: "Join the movement!",
-                      onPressed: () => Get.toNamed('/signup'),
+                      onPressed: () => Get.toNamed(AppRoutes.signup),
                       backgroundColor: controller.bgColors[index],
                       width: 250.w,
                     ),

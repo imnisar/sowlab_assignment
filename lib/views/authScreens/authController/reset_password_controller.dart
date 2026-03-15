@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sowlab_assignment/routes/app_routes.dart';
 
 class ResetPasswordController extends GetxController {
   final newPasswordController = TextEditingController();
@@ -50,12 +51,12 @@ class ResetPasswordController extends GetxController {
         isLoading.value = false;
         Get.snackbar("Success", "Password changed successfully!", 
             backgroundColor: Colors.green, colorText: Colors.white);
-        Get.offAllNamed('/login');
+        Get.offAllNamed(AppRoutes.login);
       } else {
         isLoading.value = false;
         Get.snackbar("Error", "User not authenticated. Please verify OTP again.", 
             backgroundColor: Colors.red, colorText: Colors.white);
-        Get.offAllNamed('/forgot-password');
+        Get.offAllNamed(AppRoutes.forgotPassword);
       }
     } catch (e) {
       isLoading.value = false;
