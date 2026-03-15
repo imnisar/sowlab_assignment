@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sowlab_assignment/routes/app_routes.dart';
 
 class LoginController extends GetxController {
   final emailController = TextEditingController();
@@ -69,10 +70,10 @@ class LoginController extends GetxController {
   }
 
   void goToSignUp() {
-    Get.toNamed('/signup');
+    Get.toNamed(AppRoutes.signup);
   }
 
   void forgotPassword() {
-    Get.toNamed('/forgot-password');
+    Get.toNamed(AppRoutes.forgotPassword);
   }
 }

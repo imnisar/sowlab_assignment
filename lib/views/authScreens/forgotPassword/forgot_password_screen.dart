@@ -7,19 +7,20 @@ import '../../../constants/enums.dart';
 import '../../../customWidgets/custom_button.dart';
 import '../../../customWidgets/custom_text_field.dart';
 
-class ForgotPasswordScreen extends StatelessWidget {
-  ForgotPasswordScreen({super.key});
+import '../authController/forgot_password_controller.dart';
 
-  final phoneController = TextEditingController();
+class ForgotPasswordScreen extends StatelessWidget {
+  const ForgotPasswordScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(ForgotPasswordController());
     CustomScreenUtil.init(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 30.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,19 +72,35 @@ class ForgotPasswordScreen extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 40.h),
-
               CustomTextField(
-                controller: phoneController,
+                controller: controller.phoneController,
                 hintText: "Phone Number",
                 icon: AppImages.phone,
                 keyboardType: TextInputType.phone,
+                errorMsg: controller.phoneError,
+              ),
+              SizedBox(height: 20.h),
+              Text(
+                "Enter your registered phone number to receive OTP",
+                style: TextStyle(
+                  fontFamily: AppFonts.beVietnam,
+                  fontSize: 14,
+                  color: Colors.grey,
+                ),
               ),
               SizedBox(height: 30.h),
-              CustomButton(
-                text: "Send Code",
-                onPressed: () => Get.toNamed('/verify-otp'),
+              Obx(() => CustomButton(
+                text: controller.isCheckingRegistration.value ? "" : "Send Code",
+                onPressed: controller.isRegistered.value ? () => controller.sendOtp() : null,
                 backgroundColor: const Color(0xFFD5715B),
-              ),
+                child: controller.isCheckingRegistration.value 
+                    ? const SizedBox(
+                        height: 20, 
+                        width: 20, 
+                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                      ) 
+                    : null,
+              )),
             ],
           ),
         ),

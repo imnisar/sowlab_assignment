@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,10 @@ import 'package:get/get.dart';
 class SignupController extends GetxController {
   final currentStep = 1.obs;
   final isLoading = false.obs;
+  final isSignupComplete = false.obs;
+  final isImagePicked = false.obs;
+  final Rx<File?> pickedImage = Rx<File?>(null);
+  final ImagePicker _picker = ImagePicker();
 
   final nameController = TextEditingController();
   final emailController = TextEditingController();
@@ -16,6 +22,7 @@ class SignupController extends GetxController {
   final nameError = RxString('');
   final emailError = RxString('');
   final phoneError = RxString('');
+  final isPhoneValid = false.obs;
   final passwordError = RxString('');
   final confirmPasswordError = RxString('');
 
@@ -48,6 +55,35 @@ class SignupController extends GetxController {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  @override
+  void onInit() {
+    super.onInit();
+    phoneController.addListener(() {
+      validatePhoneField(phoneController.text);
+    });
+  }
+
+  void validatePhoneField(String value) {
+    final trimmedValue = value.replaceAll(' ', '');
+    
+    if (trimmedValue.isEmpty) {
+      phoneError.value = "";
+      isPhoneValid.value = false;
+      return;
+    }
+    bool isIndiaOrPak = trimmedValue.startsWith("+91") || trimmedValue.startsWith("+92");
+    bool isCorrectLength = trimmedValue.length == 13;
+    bool isDigitsOnly = RegExp(r'^\+\d+$').hasMatch(trimmedValue);
+
+    if (!isIndiaOrPak || !isCorrectLength || !isDigitsOnly) {
+      phoneError.value = "Invalid phone number. Enter correct number with 10 digits after country code (+92 / +91). Extra digits are not allowed.";
+      isPhoneValid.value = false;
+    } else {
+      phoneError.value = "";
+      isPhoneValid.value = true;
+    }
+  }
 
   void nextStep() {
     if (currentStep.value < 4) {
@@ -156,12 +192,19 @@ class SignupController extends GetxController {
     }
   }
 
-  void attachFile() {
-    attachedFileName.value = 'usda_registration.pdf';
+  Future<void> pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      pickedImage.value = File(image.path);
+      attachedFileName.value = image.name;
+      isImagePicked.value = true;
+    }
   }
 
   void removeFile() {
+    pickedImage.value = null;
     attachedFileName.value = '';
+    isImagePicked.value = false;
   }
 
   Future<void> signup() async {
@@ -191,6 +234,7 @@ class SignupController extends GetxController {
           'zipCode': zipController.text.trim(),
         },
         'verificationFile': attachedFileName.value,
+        'imagePath': pickedImage.value?.path ?? "",
         'businessHours': {
           'selectedDays': selectedDays.toList(),
           'selectedTimeSlots': selectedTimeSlots.toList(),
@@ -199,8 +243,7 @@ class SignupController extends GetxController {
       });
 
       isLoading.value = false;
-      Get.snackbar("Success", "Signup Completed Successfully!", backgroundColor: Colors.green, colorText: Colors.white);
-      Get.offAllNamed('/login');
+      isSignupComplete.value = true;
     } on FirebaseAuthException catch (e) {
       isLoading.value = false;
       String message = "An error occurred";

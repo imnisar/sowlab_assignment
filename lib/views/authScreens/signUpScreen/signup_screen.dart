@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sowlab_assignment/routes/app_routes.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import '../../../config/app_font.dart';
@@ -21,6 +22,9 @@ class SignupScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Obx(() {
+          if (controller.isSignupComplete.value) {
+            return _buildSuccessScreen(controller);
+          }
           switch (controller.currentStep.value) {
             case 1:
               return _buildStepOne(controller);
@@ -140,12 +144,12 @@ class SignupScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              CustomButton(
+              Obx(() => CustomButton(
                 text: "Continue",
-                onPressed: controller.nextStep,
+                onPressed: controller.isPhoneValid.value ? controller.nextStep : null,
                 backgroundColor: const Color(0xFFD67C65),
                 width: 180.w,
-              ),
+              )),
             ],
           ),
           SizedBox(height: 20.h),
@@ -167,7 +171,7 @@ class SignupScreen extends StatelessWidget {
           ),
           SizedBox(height: 30.h),
           Text(
-            "Signup 2 de 4",
+            "Signup 2 of 4",
             style: TextStyle(
               fontFamily: AppFonts.beVietnam,
               fontSize: 14,
@@ -251,7 +255,7 @@ class SignupScreen extends StatelessWidget {
                 child: CustomTextField(
                   controller: controller.zipController,
                   hintText: "Enter Zipcode",
-                  icon: "",
+                  icon: AppImages.icLocation,
                   errorMsg: controller.zipError,
                   keyboardType: TextInputType.number,
                 ),
@@ -293,7 +297,7 @@ class SignupScreen extends StatelessWidget {
           ),
           SizedBox(height: 30.h),
           Text(
-            "Signup 3 de 4",
+            "Signup 3 of 4",
             style: TextStyle(
               fontFamily: AppFonts.beVietnam,
               fontSize: 14,
@@ -326,17 +330,29 @@ class SignupScreen extends StatelessWidget {
                 "Attach proof of registration",
                 style: TextStyle(fontFamily: AppFonts.beVietnam, fontSize: 14),
               ),
-              IconButton(
-                onPressed: controller.attachFile,
-                icon: Container(
-                  padding: EdgeInsets.all(10.w),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFD67C65),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.camera_alt, color: Colors.white),
-                ),
-              ),
+              Obx(() => IconButton(
+                onPressed: controller.pickImage,
+                icon: controller.pickedImage.value != null 
+                  ? Container(
+                      width: 50.w,
+                      height: 50.h,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: FileImage(controller.pickedImage.value!),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  : Container(
+                      padding: EdgeInsets.all(10.w),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFD67C65),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.camera_alt, color: Colors.white),
+                    ),
+              )),
             ],
           ),
           SizedBox(height: 20.h),
@@ -378,14 +394,14 @@ class SignupScreen extends StatelessWidget {
                 icon: Icon(Icons.arrow_back),
               ),
               Spacer(),
-              CustomButton(
-                text: controller.attachedFileName.value.isEmpty
-                    ? "Continue"
-                    : "Submit",
-                onPressed: controller.nextStep,
+              Obx(() => CustomButton(
+                text: "Continue",
+                onPressed: controller.isImagePicked.value 
+                  ? () => controller.currentStep.value++
+                  : null,
                 backgroundColor: const Color(0xFFD67C65),
                 width: 180.w,
-              ),
+              )),
             ],
           ),
           SizedBox(height: 40.h),
@@ -448,7 +464,7 @@ class SignupScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: isSelected
                               ? const Color(0xFFD67C65)
-                              : const Color(0xFFF2F2F2),
+                              : Colors.transparent,
                           borderRadius: BorderRadius.circular(8.w),
                           border: Border.all(
                             color: isSelected
@@ -459,6 +475,8 @@ class SignupScreen extends StatelessWidget {
                         child: Text(
                           day,
                           style: TextStyle(
+                            fontFamily: AppFonts.beVietnam,
+                            fontSize: 14,
                             color: isSelected ? Colors.white : Colors.grey,
                           ),
                         ),
@@ -469,7 +487,7 @@ class SignupScreen extends StatelessWidget {
                 .toList(),
           ),
           SizedBox(height: 30.h),
-          Wrap(
+          Obx(() => Wrap(
             spacing: 15.w,
             runSpacing: 15.h,
             children: controller.timeSlots
@@ -481,21 +499,24 @@ class SignupScreen extends StatelessWidget {
                     return GestureDetector(
                       onTap: () => controller.toggleTimeSlot(slot),
                       child: Container(
-                        width: 160.w,
+                        width: 150.w,
                         height: 48.h,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           color: isSelected
                               ? const Color(0xFFF8C569)
-                              : const Color(0xFF261C12).withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(8.w),
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(12.w),
+                          border: Border.all(
+                            color: isSelected ? Colors.transparent : Colors.grey.shade200,
+                          ),
                         ),
                         child: Text(
                           slot,
                           style: TextStyle(
                             fontFamily: AppFonts.beVietnam,
                             fontSize: 14,
-                            color: const Color(0xFF261C12),
+                            color: Colors.black,
                           ),
                         ),
                       ),
@@ -503,20 +524,22 @@ class SignupScreen extends StatelessWidget {
                   }),
                 )
                 .toList(),
-          ),
+          )),
           Spacer(),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
                 onPressed: controller.previousStep,
-                icon: Icon(Icons.arrow_back),
+                icon: Icon(Icons.arrow_back, color: Colors.black, size: 30.w),
               ),
-              Spacer(),
               Obx(() => CustomButton(
                 text: controller.isLoading.value ? "" : "Signup",
-                onPressed: controller.isLoading.value ? null : () => controller.signup(),
+                onPressed: (controller.isLoading.value || !controller.isImagePicked.value) 
+                    ? null 
+                    : () => controller.signup(),
                 backgroundColor: const Color(0xFFD67C65),
-                width: 180.w,
+                width: 200.w,
                 child: controller.isLoading.value 
                     ? const SizedBox(
                         height: 20, 
@@ -526,6 +549,51 @@ class SignupScreen extends StatelessWidget {
                     : null,
               )),
             ],
+          ),
+          SizedBox(height: 40.h),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSuccessScreen(SignupController controller) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 40.w),
+      child: Column(
+        children: [
+          const Spacer(flex: 2),
+          Icon(
+            Icons.done,
+            color: const Color(0xFF00CB14),
+            size: 120.w,
+          ),
+          SizedBox(height: 30.h),
+          Text(
+            "You’re all done!",
+            style: TextStyle(
+              fontFamily: AppFonts.beVietnam,
+              fontSize: 32,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF261C12),
+            ),
+          ),
+          SizedBox(height: 25.h),
+          Text(
+            "Hang tight! We are currently reviewing your account and will follow up with you in 2-3 business days. In the meantime, you can setup your inventory.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: AppFonts.beVietnam,
+              fontSize: 14,
+              color: const Color(0xFF898989),
+              height: 1.5,
+            ),
+          ),
+          const Spacer(flex: 3),
+          CustomButton(
+            text: "Got it!",
+            onPressed: () => Get.offAllNamed(AppRoutes.login),
+            backgroundColor: const Color(0xFFD67C65),
+            width: double.infinity,
           ),
           SizedBox(height: 40.h),
         ],

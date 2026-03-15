@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../config/app_images.dart';
+import 'package:sowlab_assignment/routes/app_routes.dart';
 
 class OnboardingController extends GetxController {
   final pageController = PageController();
@@ -28,5 +29,5 @@ class OnboardingController extends GetxController {
 
   void onPageChanged(int index) => currentIndex.value = index;
 
-  void goToLogin() => Get.offNamed('/login');
+  void goToLogin() => Get.offNamed(AppRoutes.login);
 }
